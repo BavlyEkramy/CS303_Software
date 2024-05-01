@@ -22,7 +22,7 @@ onSnapshot(colAdmin, (snapshot) => {
   snapshot.docs.forEach((use) => {
      admin.push({ ...use.data(), id: use.id });
   });
-  console.log("Users ", admin);
+  console.log("Admins ", admin);
 });
 
 ////////-------------------    take object to add new Admin  -----------/////////
@@ -39,16 +39,16 @@ async function AddAdmin(admin) {
 ////////-------------------    get current Admin   -----------/////////
 async function GetAdmin() {
   const adminid = auth.currentUser.uid;
-  const admin = (await getDocs(query(colAdmin, where("uid", "==", adminid)))).docs;
-  console.log("current User", { ...admin[0].data(), id: admin[0].id });
+  const admin = (await getDocs(query(colAdmin, where("Adid", "==", adminid)))).docs;
+  console.log("current Admin", { ...admin[0].data(), id: admin[0].id });
   return { ...admin[0].data(), id: admin[0].id };
 }
 
 ////////-------------------    check current Admin  -----------/////////
 async function checkAdmin(id) {
      const adminid = id;
-     const admin = (await getDocs(query(colAdmin, where("uid", "==", adminid)))).docs;
-     console.log("current User", { ...admin[0].data(), id: admin[0].id });
+     const admin = (await getDocs(query(colAdmin, where("Adid", "==", adminid)))).docs;
+     console.log("current Admin", { ...admin[0].data(), id: admin[0].id });
      return { ...admin[0].data(), id: admin[0].id };
    }
    
