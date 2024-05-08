@@ -25,7 +25,7 @@ async function register(email, password) {
   return cred;
 }
 
-async function resetEmail(email) {
+async function forgetPassword(email) {
   const cred = await sendPasswordResetEmail(auth, email);
   return cred;
 }
@@ -48,4 +48,4 @@ async function getUserUId() {
 }
 
 
-export { register, login, resetEmail, logout , getUserUId  };
+export { register, login, forgetPassword, logout, getUserUId };

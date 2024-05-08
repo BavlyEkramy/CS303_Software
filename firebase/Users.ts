@@ -26,6 +26,7 @@ onSnapshot(colUser, (snapshot) => {
 });
 
 ////////-------------------    take object to add new user  -----------/////////
+
 async function AddUser(user) {
   let res = await addDoc(colUser, {
     uid: auth.currentUser.uid,
@@ -37,6 +38,7 @@ async function AddUser(user) {
 }
 
 ////////-------------------    get current user   -----------/////////
+
 async function GetUser() {
   const userid = auth.currentUser.uid;
   const user = (await getDocs(query(colUser, where("uid", "==", userid)))).docs;
@@ -49,6 +51,6 @@ async function DelUser(user) {
   const docRef = doc(colUser, user.id);
   await deleteDoc(docRef);
   await deleteUser(auth.currentUser);
-}
+} 
 
 export { GetUser, AddUser, DelUser };
