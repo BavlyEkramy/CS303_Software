@@ -38,4 +38,14 @@ async function logout() {
   await signOut(auth);
 }
 
-export { register, login, resetEmail, logout };
+async function getUserUId() {
+  if (auth.currentUser != null) {
+    
+    return auth.currentUser.uid;
+  } else {
+    return null;
+  }
+}
+
+
+export { register, login, resetEmail, logout , getUserUId  };
