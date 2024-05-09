@@ -4,9 +4,9 @@ import { Button, Pressable, StyleSheet, Text, View } from "react-native";
 import { AddUser, DelUser, GetUser } from "../firebase/Users";
 import { login, register } from "../firebase/Log";
 
-
 export default function Page() {
   const [user, setUser] = useState({});
+
   const logi = async () => {
     try {
       await login("b@b.com", "123456789");

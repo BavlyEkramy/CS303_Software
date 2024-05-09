@@ -47,7 +47,7 @@ export default function TestCourse() {
 
   // Function to handle course addition
   const addCourse = async () => {
-    console.log(course)
+    console.log(course);
 
     try {
       if (course.category && course.description && course.img && course.name) {
