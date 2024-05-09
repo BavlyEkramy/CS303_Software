@@ -1,377 +1,225 @@
-import { StatusBar } from "expo-status-bar";
-import { useRouter } from "expo-router";
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
-  Image,
-  Touchable,
-  Pressable,
-  Alert,
-  TouchableOpacity,
   TextInput,
   StyleSheet,
+  TouchableOpacity,
+  Pressable,
+  SafeAreaView,
 } from "react-native";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
-
-import { count } from "firebase/firestore";
+import { useRouter } from "expo-router";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { GetUser } from "../firebase/Users";
+import { AddCourse } from "../firebase/Courses";
 
-
-export default function AddCourse() {
-  const [user, setUser] = useState("");
+export default function TestCourse() {
   const router = useRouter();
   const [course, setCourse] = useState({
     name: "",
     description: "",
     img: "",
-    catigory: "",
+    category: "",
   });
-  const [profileRef] = useState();
-  const data = [
-    { label: "Advanced", value: "1" },
-    { label: "Basic", value: "2" },
-  ];
 
+  const [user, setUser] = useState(null);
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
 
-  const getuser = async () => {
-    try {
-      const user = await GetUser();
-      setUser(user);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  const data = [
+    { label: "Advanced", value: "0" },
+    { label: "Basic", value: "1" },
+  ];
+
+  // Fetch user data on component mount
   useEffect(() => {
-    getuser();
+    const fetchUser = async () => {
+      try {
+        const fetchedUser = await GetUser();
+        setUser(fetchedUser);
+      } catch (e) {
+        console.error("Error fetching user:", e);
+      }
+    };
+    fetchUser();
   }, []);
 
+  // Function to handle course addition
   const addCourse = async () => {
+    console.log(course)
+
     try {
-      console.log(course);
+      if (course.category && course.description && course.img && course.name) {
+        const yoy = await AddCourse(course, user);
+        router.navigate({
+          pathname: "/AddChapterToCourse",
+          params: {
+            courseId: yoy,
+          },
+        });
+      } else alert("please fill the fields");
     } catch (e) {
-      console.log(e);
+      console.error("Error adding course:", e);
     }
   };
 
+  // Render label conditionally
   const renderLabel = () => {
     if (value || isFocus) {
-      return <Text style={[styles.label, isFocus && { color: "blue" }]}></Text>;
+      return (
+        <Text style={[styles.label, isFocus && { color: "blue" }]}>
+          {isFocus ? "Search" : "Select item"}
+        </Text>
+      );
     }
     return null;
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#111",
-      }}
-    >
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "",
-        }}
-      >
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: " white",
+    <SafeAreaView style={styles.container}>
+      <View style={styles.formContainer}>
+        <FormInput
+          label="Course Name"
+          placeholder="Course Name"
+          value={course.name}
+          onChangeText={(value) => setCourse({ ...course, name: value })}
+        />
+        <FormInput
+          label="Course Description"
+          placeholder="Course Description"
+          value={course.description}
+          onChangeText={(value) => setCourse({ ...course, description: value })}
+        />
+        <DropdownInput
+          label="Course Category"
+          data={data}
+          value={value}
+          isFocus={isFocus}
+          onChange={(item) => {
+            setCourse({ ...course, category: item.label });
+            setValue(item.value);
+            setIsFocus(false);
           }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              padding: 0,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "white",
-              borderRadius: 10,
-            }}
-          >
-            <Text
-              style={{
-                color: "white",
-                fontSize: 20,
-                fontWeight: "bold",
-                padding: 10,
-                backgroundColor: "black",
-                borderRadius: 10,
-                width: wp("80%"),
-                
-              }}
-            >
-              Course Name
-            </Text>
-          </View>
-          <View
-            style={{
-              borderColor: "white",
-              borderWidth: 1,
-              borderRadius: 10,
-              width: wp("80%"),
-              backgroundColor: "white",
-            }}
-          >
-            <TextInput
-              placeholder="Course Name"
-              onChangeText={(value) => setCourse({ ...course, name: value })}
-              style={{
-                padding: 10,
-                fontSize: 15,
-                color: "blue",
-                borderRadius: 10,
-                width: wp("80%"),
-                height: 40,
-                borderColor: "white",
-                borderWidth: 1,
-                backgroundColor: "white",
-              }}
-            />
-          </View>
-        </View>
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            padding: 15,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              padding: 0,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "white",
-              borderRadius: 10,
-            }}
-          >
-            <Text
-              style={{
-                color: "white",
-                fontSize: 20,
-                fontWeight: "bold",
-                padding: 10,
-                backgroundColor: "black",
-                borderRadius: 10,
-                width: wp("80%"),
-              }}
-            >
-              Course Category
-            </Text>
-          </View>
-          <View
-            style={{
-              flex: 1,
-              borderColor: "blue",
-              borderWidth: 1,
-              borderRadius: 10,
-              width: wp("80%"),
-              justifyContent: "center",
-              padding: 10,
-              marginBottom: 10,
-              marginTop: 10,
-              backgroundColor: "white",
-              color: "blue",
-              fontSize: 15,
-              fontWeight: "formal",
-              padding: 0,
-            }}
-          >
-            {renderLabel()}
-            <Dropdown
-              style={[styles.dropdown, isFocus && { borderColor: "blue" }]}
-              placeholderStyle={{ color: "blue" }}
-              selectedTextStyle={{ color: "blue" }}
-              inputSearchStyle={{ color: "blue" }}
-              iconStyle={{ color: "blue" }}
-              data={data}
-              search
-              maxHeight={300}
-              labelField="label"
-              valueField="value"
-              placeholder={!isFocus ? "Select item" : "..."}
-              searchPlaceholder="Search..."
-              value={value}
-              onFocus={() => setIsFocus(true)}
-              onBlur={() => setIsFocus(false)}
-              onChange={(item) => {
-                setValue(item.value);
-                setIsFocus(false);
-              }}
-              renderLeftIcon={() => (
-                <AntDesign
-                  style={{ marginRight: 10 }}
-                  color={isFocus ? "blue" : "black"}
-                  name="Safety"
-                  size={20}
-                />
-              )}
-            />
-          </View>
-        </View>
-        <View style={{ justifyContent: "center", alignItems: "center" }}>
-          <View
-            style={{
-              flexDirection: "row",
-              padding: 0,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "white",
-              borderRadius: 10,
-            }}
-          >
-            <Text
-              style={{
-                color: "white",
-                fontSize: 20,
-                fontWeight: "bold",
-                padding: 10,
-                backgroundColor: "black",
-                borderRadius: 10,
-                width: wp("80%"),
-              }}
-            >
-              Course Description
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              padding: 2,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "white",
-              borderRadius: 10,
-            }}
-          >
-            <TextInput
-              placeholder="Course Description"
-              onChangeText={(value) =>
-                setCourse({ ...course, description: value })
-              }
-              style={{
-                padding: 10,
-                fontSize: 15,
-                color: "blue",
-                borderRadius: 10,
-                width: wp("80%"),
-                height: 40,
-                borderColor: "white",
-                borderWidth: 1,
-                backgroundColor: "white",
-              }}
-            />
-          </View>
-        </View>
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            padding: 5,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              padding: 0,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "white",
-              borderRadius: 10,
-            }}
-          >
-            <Text
-              style={{
-                color: "white",
-                fontSize: 20,
-                fontWeight: "bold",
-                padding: 10,
-                backgroundColor: "black",
-                borderRadius: 10,
-                width: wp("80%"),
-              }}
-            >
-              ProfileURL
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              padding: 2,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "white",
-              borderRadius: 10,
-            }}
-          >
-            <TextInput
-              onChangeText={(value) => setCourse({ ...course, img: value })}
-              placeholder="Profile URL" 
-              style={{
-                padding: 10,
-                fontSize: 15,
-                color: "blue",
-                borderRadius: 10,
-                width: wp("80%"),
-                height: 40,
-                borderColor: "white",
-                borderWidth: 1,
-                backgroundColor: "white",
-              }}
-            />
-          </View>
-        </View>
-        <View style={{ justifyContent: "center", alignItems: "center" }}>
-          <TouchableOpacity
-            onPress={() => addCourse()}
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              padding: 10,
-              backgroundColor: "white",
-              borderRadius: 50,
-              width: wp("80%"),
-              height: hp("7%"),
-            }}
-          >
-            <Text
-              style={{
-                color: "black",
-                fontSize: 25,
-                fontWeight: "bold",
-                padding: 15,
-              }}
-            >
-              Next
-            </Text>
-          </TouchableOpacity>
-        </View>
+          setIsFocus={setIsFocus}
+        />
+        <FormInput
+          label="Profile URL"
+          placeholder="Profile URL"
+          value={course.img}
+          onChangeText={(value) => setCourse({ ...course, img: value })}
+        />
+        <Pressable style={styles.nextButton} onPress={addCourse}>
+          <Text style={styles.buttonText}>Next</Text>
+        </Pressable>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
+// Functional component for form input fields
+const FormInput = ({ label, placeholder, value, onChangeText }) => (
+  <View style={styles.inputContainer}>
+    <Text style={styles.label}>{label}</Text>
+    <TextInput
+      style={styles.input}
+      placeholder={placeholder}
+      value={value}
+      onChangeText={onChangeText}
+    />
+  </View>
+);
+
+// Functional component for dropdown input field
+const DropdownInput = ({
+  label,
+  data,
+  value,
+  isFocus,
+  onChange,
+  setIsFocus,
+}) => (
+  <View style={styles.dropdownContainer}>
+    <Text style={styles.label}>{label}</Text>
+    <Dropdown
+      style={[styles.dropdown, isFocus && { borderColor: "blue" }]}
+      data={data}
+      value={value}
+      labelField="label"
+      valueField="value"
+      placeholder={!isFocus ? "Select item" : "..."}
+      placeholderStyle={{ color: "blue" }}
+      searchPlaceholder="Search..."
+      onChange={onChange}
+      onFocus={() => setIsFocus(true)}
+      onBlur={() => setIsFocus(false)}
+      renderLeftIcon={() => (
+        <AntDesign
+          name="Safety"
+          size={20}
+          style={{ marginRight: 10, color: isFocus ? "blue" : "black" }}
+        />
+      )}
+    />
+  </View>
+);
+
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#111",
+  },
+  formContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: "90%",
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: "#f0f0f0",
+  },
+  inputContainer: {
+    width: "100%",
+    marginVertical: 10,
+  },
+  label: {
+    fontSize: 16,
+    color: "black",
+    marginBottom: 5,
+    fontWeight: "bold",
+  },
+  input: {
+    width: "100%",
+    height: 40,
+    padding: 10,
+    borderRadius: 5,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    backgroundColor: "white",
+  },
+  dropdownContainer: {
+    width: "100%",
+    marginVertical: 10,
+  },
   dropdown: {
     height: 50,
+    paddingHorizontal: 8,
     borderColor: "gray",
     borderWidth: 0.5,
     borderRadius: 8,
-    paddingHorizontal: 8,
+  },
+  nextButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: "black",
+    borderRadius: 50,
+    width: "80%",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "bold",
   },
 });

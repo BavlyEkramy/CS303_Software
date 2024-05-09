@@ -3,29 +3,14 @@ import { useEffect, useState } from "react";
 import { Button, Pressable, StyleSheet, Text, View } from "react-native";
 import { AddUser, DelUser, GetUser } from "../firebase/Users";
 import { login, register } from "../firebase/Log";
-import {
-  AddItemsCards,
-  deleteItemsCards,
-  editCard,
-  getCardItems,
-  // subscribe,
-} from "../firebase/CartItems";
-import { AddCourse, GetCourses } from "../firebase/Courses";
+
 
 export default function Page() {
-  const [course, setCourse] = useState(null);
   const [user, setUser] = useState({});
-  const test = async () => {
-    try {
-      const u = await GetCourses();
-      setCourse(u[0]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const logi = async () => {
     try {
-      // await login("bavly@b.com", "123456789");
+      await login("b@b.com", "123456789");
+      // await AddUser({ name: "bavly", email: "b@b.com" , img:""});
       const u = await GetUser();
       setUser(u);
     } catch (error) {
@@ -37,20 +22,13 @@ export default function Page() {
     <View style={styles.container}>
       <Text
         onPress={() => {
-          router.navigate({
-            pathname: "/AddChapterToCourse",
-            params: {
-              courseId: course.id,
-            },
-          });
+          router.navigate("/AddCourse");
         }}
         style={styles.title}
       >
-        go to AddChapterToCourse
+        go to Add Course
       </Text>
-      <Text onPress={test} style={styles.title}>
-        test
-      </Text>
+
       <Text onPress={logi} style={styles.title}>
         login
       </Text>
