@@ -36,7 +36,8 @@ async function AddCourse(course, admin) {
   });
   return res;
 }
-////////////-------------------    get current course   -----------/////////
+
+////////////----------------  get all courses   -----------/////////
 async function GetCourses() {
   const course = (await getDocs(colCourse)).docs;
   const c = [];
@@ -47,6 +48,14 @@ async function GetCourses() {
   return c;
 }
 
+////////////----------------  get course take id of course   -----------/////////
+async function GetCourseById(id) {
+  const docRef = doc(colCourse, id);
+  const o = await getDoc(docRef);
+  console.log("GetCourse", o.data());
+  return { ...o.data(), id: o.id };
+}
+
 ////////-------------------    Delete course   -----------////
 async function DelCourse(course) {
   const docRef = doc(colCourse, course.id);
@@ -55,9 +64,11 @@ async function DelCourse(course) {
 
 ////////-------------------    update course take object for course  -----------////
 async function updateCourse(course) {
-  const docRef = doc(colCourse, course.id);
+  console.log(course.id);
+  const docRef = await doc(colCourse, course.id);
   await updateDoc(docRef, course);
 }
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /////------------- add one chapter for course take course Id and object for chapter  -------------/////
@@ -84,7 +95,6 @@ async function updateChapter(idCourse, c) {
 //     -------------------    get chapters for course take course id   -----------////
 async function getChapters(idCourse) {
   console.log(idCourse);
-
   const coll = collection(db, `Courses/${idCourse}/chapters`);
   const querySnapshot = (await getDocs(coll)).docs;
   let chapters = [];
@@ -121,4 +131,5 @@ export {
   deleteChapter,
   sup,
   GetCourses,
+  GetCourseById,
 };
