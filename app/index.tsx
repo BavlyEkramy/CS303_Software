@@ -8,14 +8,17 @@ import {
   deleteItemsCards,
   editCard,
   getCardItems,
-  subscribe,
+  
 } from "../firebase/CartItems";
+import { AddCourse } from "../firebase/Courses";
 
 export default function Page() {
   const [cart, setCart] = useState(null);
 
   const getUser = async () => {
     try {
+
+      
       // await AddItemsCards(
       //   {
       //     name: "ch1",
@@ -26,12 +29,12 @@ export default function Page() {
       //   },
       //   { name: "bavly", id: "knjbhv" }
       // );
-      const u = await getCardItems();
-      console.log(u);
-      setCart(u);
-      // await deleteItemsCards(u[0].id);
-      const c1 = {...u[0] , name:"ch3" , hours:60}
-      const pp = await editCard(c1);
+      // const u = await getCardItems();
+      // console.log(u);
+      // setCart(u);
+      // // await deleteItemsCards(u[0].id);
+      // const c1 = {...u[0] , name:"ch3" , hours:60}
+      // const pp = await editCard(c1);
     } catch (error) {
       console.log(error);
     }

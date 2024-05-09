@@ -46,6 +46,9 @@ async function GetCourses() {
   return c;
 }
 
+
+
+
 ////////-------------------    Delete course   -----------////
 async function DelCourse(course) {
   const docRef = doc(colCourse, course.id);
