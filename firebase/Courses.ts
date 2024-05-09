@@ -47,6 +47,7 @@ async function GetCourses() {
   return c;
 }
 
+
 ////////////----------------  get course take id of course   -----------/////////
 async function GetCourseById(id) {
   const docRef = doc(colCourse, id);
@@ -54,6 +55,7 @@ async function GetCourseById(id) {
   console.log("GetCourse", o.data());
   return { ...o.data(), id: o.id };
 }
+
 
 ////////-------------------    Delete course   -----------////
 async function DelCourse(course) {

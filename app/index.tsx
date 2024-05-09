@@ -8,9 +8,9 @@ import {
   deleteItemsCards,
   editCard,
   getCardItems,
-  // subscribe,
 } from "../firebase/CartItems";
 import { AddCourse, GetCourses } from "../firebase/Courses";
+
 
 export default function Page() {
   const [course, setCourse] = useState(null);
@@ -19,6 +19,7 @@ export default function Page() {
     try {
       const u = await GetCourses();
       setCourse(u[0]);
+
     } catch (error) {
       console.log(error);
     }
