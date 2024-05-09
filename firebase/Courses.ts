@@ -29,11 +29,13 @@ onSnapshot(colCourse, (snapshot) => {
 
 //////////-------------------    take object to add new course  -----------/////////
 async function AddCourse(course, admin) {
+  console.log(course, admin);
   let res = await addDoc(colCourse, {
     ...course,
     admin: admin,
   });
-  return res;
+
+  return res.id;
 }
 
 ////////////----------------  get all courses   -----------/////////

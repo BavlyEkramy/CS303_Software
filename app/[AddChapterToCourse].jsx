@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
-import { StatusBar, TextInput, View } from "react-native-web";
 import {
+  StatusBar,
+  View,
   FlatList,
   Pressable,
   StyleSheet,
   Text,
+  TextInputComponent,
+  TextInput,
+  SafeAreaView,
 } from "react-native";
 import {
   GetCourseById,
@@ -54,6 +58,7 @@ const AddChapterToCourse = () => {
 
   const Finish = async () => {
     try {
+      console.log(courseId);
       const cu = await GetCourseById(courseId);
       const ch = await getChapters(courseId);
       let nvi = 0;
@@ -73,7 +78,7 @@ const AddChapterToCourse = () => {
 
   return (
     <>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <TextInput
           placeholder="name the chapter"
           onChangeText={(n) => {
@@ -103,7 +108,7 @@ const AddChapterToCourse = () => {
             <Text style={styles.textBtn}>Add</Text>
           </Pressable>
         </View>
-      </View>
+      </SafeAreaView>
       <StatusBar style="#111" />
     </>
   );
@@ -114,6 +119,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#111",
     padding: 10,
+    paddingTop: 100,
     height: "100%",
   },
   input: {
@@ -137,12 +143,11 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   textBtn: {
-    fontSize: 30,
-    lineHeight: 50,
+    fontSize: 25,
     color: "#fff",
     borderRadius: 10,
-    paddingHorizontal: 8,
-    height: 50,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     width: "100%",
     backgroundColor: "rgb(100,100,220)",
   },

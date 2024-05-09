@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text } from "react-native";
-import { TextInput, View } from "react-native-web";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 const AddVideo = ({ addV }) => {
   const [video, setVideo] = useState({ name: "", link: "" });
@@ -17,6 +16,7 @@ const AddVideo = ({ addV }) => {
         <View style={styles.sectionOfInput}>
           <Text style={styles.text}>name</Text>
           <TextInput
+            placeholder="name of a video"
             onChangeText={(n) => setVideo({ ...video, name: n })}
             style={styles.input}
             editable={flag}
@@ -25,6 +25,7 @@ const AddVideo = ({ addV }) => {
         <View style={styles.sectionOfInput}>
           <Text style={styles.text}>link</Text>
           <TextInput
+            placeholder="link of a video"
             onChangeText={(n) => setVideo({ ...video, link: n })}
             style={styles.input}
             editable={flag}
@@ -32,13 +33,8 @@ const AddVideo = ({ addV }) => {
         </View>
       </View>
       {flag ? (
-        <Pressable onPress={add} style={styles.pressBtn}>
-          <AntDesign
-            style={styles.textBtn}
-            name="plus"
-            size={24}
-            color="black"
-          />
+        <Pressable onPress={add}>
+          <AntDesign style={styles.textBtn} name="plus" color="black" />
         </Pressable>
       ) : (
         <></>
@@ -86,16 +82,11 @@ const styles = StyleSheet.create({
     width: "30%",
   },
 
-  pressBtn: {
-    width: 40,
-  },
   textBtn: {
-    fontSize: 35,
-    lineHeight: 40,
+    fontSize: 30,
     color: "#fff",
     borderRadius: 25,
-    paddingHorizontal: 8,
-    height: 50,
+    marginLeft: 10,
     width: "100%",
   },
 });

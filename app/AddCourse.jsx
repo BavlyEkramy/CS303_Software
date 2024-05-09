@@ -6,11 +6,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   Pressable,
+  SafeAreaView,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { GetUser } from "../firebase/Users";
+import { AddCourse } from "../firebase/Courses";
 
 export default function TestCourse() {
   const router = useRouter();
@@ -26,8 +28,8 @@ export default function TestCourse() {
   const [isFocus, setIsFocus] = useState(false);
 
   const data = [
-    { label: "Advanced", value: "1" },
-    { label: "Basic", value: "2" },
+    { label: "Advanced", value: "0" },
+    { label: "Basic", value: "1" },
   ];
 
   // Fetch user data on component mount
@@ -45,9 +47,18 @@ export default function TestCourse() {
 
   // Function to handle course addition
   const addCourse = async () => {
+    console.log(course);
+
     try {
-      // Perform the course addition logic
-      console.log("Course to be added:", course);
+      if (course.category && course.description && course.img && course.name) {
+        const yoy = await AddCourse(course, user);
+        router.navigate({
+          pathname: "/AddChapterToCourse",
+          params: {
+            courseId: yoy,
+          },
+        });
+      } else alert("please fill the fields");
     } catch (e) {
       console.error("Error adding course:", e);
     }
@@ -66,7 +77,7 @@ export default function TestCourse() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.formContainer}>
         <FormInput
           label="Course Name"
@@ -102,7 +113,7 @@ export default function TestCourse() {
           <Text style={styles.buttonText}>Next</Text>
         </Pressable>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
