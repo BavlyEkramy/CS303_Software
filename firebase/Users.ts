@@ -14,8 +14,8 @@ import {
   updateDoc,
   addDoc,
 } from "firebase/firestore";
-
 const colUser = collection(db, "users");
+
 
 onSnapshot(colUser, (snapshot) => {
   let user = [];
@@ -26,13 +26,12 @@ onSnapshot(colUser, (snapshot) => {
 });
 
 ////////-------------------    take object to add new user  -----------/////////
-
 async function AddUser(user) {
   let res = await addDoc(colUser, {
     uid: auth.currentUser.uid,
     name: user.name,
     email: user.email,
-    image: "",
+    img: user.img,
   });
   return res;
 }

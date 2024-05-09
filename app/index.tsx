@@ -8,40 +8,27 @@ import {
   deleteItemsCards,
   editCard,
   getCardItems,
-  
 } from "../firebase/CartItems";
-import { AddCourse } from "../firebase/Courses";
+import { AddCourse, GetCourses } from "../firebase/Courses";
+
 
 export default function Page() {
-  const [cart, setCart] = useState(null);
-
-  const getUser = async () => {
+  const [course, setCourse] = useState(null);
+  const [user, setUser] = useState({});
+  const test = async () => {
     try {
+      const u = await GetCourses();
+      setCourse(u[0]);
 
-      
-      // await AddItemsCards(
-      //   {
-      //     name: "ch1",
-      //     level: 5,
-      //     dis: "50mknljbm sakbu uepfg ulb ;is  ersfjckbhs  dss",
-      //     img: "",
-      //     hours: "hard",
-      //   },
-      //   { name: "bavly", id: "knjbhv" }
-      // );
-      // const u = await getCardItems();
-      // console.log(u);
-      // setCart(u);
-      // // await deleteItemsCards(u[0].id);
-      // const c1 = {...u[0] , name:"ch3" , hours:60}
-      // const pp = await editCard(c1);
     } catch (error) {
       console.log(error);
     }
   };
   const logi = async () => {
     try {
-      await login("b@b.com", "123456789");
+      // await login("bavly@b.com", "123456789");
+      const u = await GetUser();
+      setUser(u);
     } catch (error) {
       console.log(error);
     }
@@ -49,11 +36,24 @@ export default function Page() {
 
   return (
     <View style={styles.container}>
-      <Text onPress={getUser} style={styles.title}>
-        Get Started !
+      <Text
+        onPress={() => {
+          router.navigate({
+            pathname: "/AddChapterToCourse",
+            params: {
+              courseId: course.id,
+            },
+          });
+        }}
+        style={styles.title}
+      >
+        go to AddChapterToCourse
+      </Text>
+      <Text onPress={test} style={styles.title}>
+        test
       </Text>
       <Text onPress={logi} style={styles.title}>
-        log
+        login
       </Text>
     </View>
   );
