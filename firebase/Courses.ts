@@ -16,6 +16,8 @@ import {
   serverTimestamp,
   orderBy,
 } from "firebase/firestore";
+import { getCardItemsWithId } from "./CartItems";
+
 
 const colCourse = collection(db, "Courses");
 
@@ -63,14 +65,38 @@ async function GetCourseById(id) {
 async function DelCourse(course) {
   const docRef = doc(colCourse, course.id);
   await deleteDoc(docRef);
+  const CartItem = await getCardItemsWithId(course.id);
+  if (!CartItem){
+    console.log('Cart items not found or error occurred.');
+    return;
+  }
+  const deleteCartItems = CartItem.map( async (item) => {
+    const docRef =  doc(colCourse, item.cartId);
+    await deleteDoc(docRef);
+  });
+  return deleteCartItems;
 }
+
+
 
 ////////-------------------    update course take object for course  -----------////
 async function updateCourse(course) {
   console.log(course.id);
   const docRef = await doc(colCourse, course.id);
   await updateDoc(docRef, course);
+  const CartItem = await getCardItemsWithId(course.id);
+  if (!CartItem){
+    console.log('Cart items not found or error occurred.');
+    return;
+  }
+  const updatedCartItems = CartItem.map( async (item) => {
+    const docRef =  doc(colCourse, item.cartId);
+    await updateDoc(docRef, course);
+  });
+  return updatedCartItems;
 }
+
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -135,4 +161,5 @@ export {
   sup,
   GetCourses,
   GetCourseById,
+  getCardItemsWithId,
 };
