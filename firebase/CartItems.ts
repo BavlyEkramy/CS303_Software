@@ -15,8 +15,7 @@ import {
 const colCart = collection(db, "Carts");
 
 /* -------------------    get current user   --------------------- */
-// const o =  query( colCart, where("user.uid", "==" , "hlgkjfgcfh"))
-onSnapshot(query(colCart, where("user.uid", "==", "knjbhv")), (snapshot) => {
+onSnapshot(colCart, (snapshot) => {
   let user = [];
   snapshot.docs.forEach((use) => {
     user.push({ ...use.data(), id: use.id });
@@ -49,7 +48,7 @@ async function getCardItems() {
     const querySnapshot = (await getDocs(colCart)).docs;
     const cart = [];
     querySnapshot.forEach((doc) => {
-      cart.push({ id: doc.id, ...doc.data() });
+      cart.push({ cartId: doc.id, ...doc.data() });
     });
     return cart;
   } catch (error) {
@@ -59,7 +58,7 @@ async function getCardItems() {
 // /* -------------------    edit item  -----------*/
 async function editCard(card) {
   try {
-    const docRef = doc(colCart, card.id);
+    const docRef = doc(colCart, card.cartId);
     await updateDoc(docRef, card);
     console.log("edited");
   } catch (err) {
@@ -67,13 +66,11 @@ async function editCard(card) {
   }
 }
 
-
-
 // /* -------------------    get item With id -----------*/
 
 async function getCardItemsWithId(id) {
   try {
-    const q = query(colCart, where('id' , '==', id));
+    const q = query(colCart, where("id", "==", id));
     const querySnapshot = (await getDocs(q)).docs;
     const cart = [];
     querySnapshot.forEach((doc) => {
@@ -101,24 +98,23 @@ async function getCardItemsWithId(id) {
 
 // ////////-------------------  add Chapter take id of cart and object  -----------/////////
 
-// async function addChapter(idCart, ch) {
-//   const coll = collection(db, `Carts/ ${idCart}/ Chapter`);
-//   let res = await addDoc(coll, {
-//   ...ch
-//   });
-//   return res;
-// }
+async function addChapter(idCart, ch) {
+  const coll = collection(db, `Carts/${idCart}/Chapter`);
+  let res = await addDoc(coll, {
+    ...ch,
+  });
+  return res;
+}
 
 // ////////------------------- get all Chapters   take id of cart -----------/////////
 
 async function getChapters(idCart) {
   const coll = collection(db, `Carts/${idCart}/Chapter`);
   const q = query(coll, orderBy("time"));
-
   const docSnap = (await getDocs(coll)).docs;
   const All = [];
   docSnap.forEach((m) => {
-    All.push({ ...m.data(), id: m.id });
+    All.push({ ...m.data(), chId: m.id });
   });
   return All;
 }
@@ -126,9 +122,26 @@ async function getChapters(idCart) {
 // ////////-------------------  add Chapter take id of cart and object  -----------/////////
 
 async function updateChapter(idCart, item) {
-  const coll = collection(db, `Carts/ ${idCart}/ Chapter`);
-  const docRef = doc(coll, item.id);
+  const coll = collection(db, `Carts/${idCart}/Chapter`);
+  const docRef = doc(coll, item.chId);
   await updateDoc(docRef, item);
 }
 
-export { AddItemsCards, getCardItems, deleteItemsCards, editCard  , getCardItemsWithId, getChapters, updateChapter };
+// ////////-------------------  del Chapter take id of cart and id of Chapter -----------/////////
+async function delChapter(idCart, chId) {
+  const coll = collection(db, `Carts/${idCart}/Chapter`);
+  const docRef = doc(coll, chId);
+  await deleteDoc(docRef);
+}
+
+export {
+  AddItemsCards,
+  getCardItems,
+  deleteItemsCards,
+  editCard,
+  addChapter,
+  delChapter,
+  updateChapter,
+  getChapters,
+  getCardItemsWithId,
+};
