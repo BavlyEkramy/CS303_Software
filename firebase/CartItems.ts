@@ -6,6 +6,7 @@ import {
   doc,
   getDocs,
   onSnapshot,
+  orderBy,
   query,
   updateDoc,
   where,
@@ -14,8 +15,7 @@ import {
 const colCart = collection(db, "Carts");
 
 /* -------------------    get current user   --------------------- */
-// const o =  query( colCart, where("user.uid", "==" , "hlgkjfgcfh"))
-onSnapshot(query(colCart, where("user.uid", "==", "knjbhv")), (snapshot) => {
+onSnapshot(colCart, (snapshot) => {
   let user = [];
   snapshot.docs.forEach((use) => {
     user.push({ ...use.data(), id: use.id });
@@ -66,6 +66,22 @@ async function editCard(card) {
   }
 }
 
+// /* -------------------    get item With id -----------*/
+
+async function getCardItemsWithId(id) {
+  try {
+    const q = query(colCart, where("id", "==", id));
+    const querySnapshot = (await getDocs(q)).docs;
+    const cart = [];
+    querySnapshot.forEach((doc) => {
+      cart.push({ cartId: doc.id, ...doc.data() });
+    });
+    return cart;
+  } catch (error) {
+    console.error("Error Fetching data: ", error);
+  }
+}
+
 // /* -------------------    subscribe  -----------*/
 // async function subscribe() {
 //   const t = () =>
@@ -94,7 +110,7 @@ async function addChapter(idCart, ch) {
 
 async function getChapters(idCart) {
   const coll = collection(db, `Carts/${idCart}/Chapter`);
-  // const q = query(coll, orderBy("time"));
+  const q = query(coll, orderBy("time"));
   const docSnap = (await getDocs(coll)).docs;
   const All = [];
   docSnap.forEach((m) => {
@@ -127,4 +143,5 @@ export {
   delChapter,
   updateChapter,
   getChapters,
+  getCardItemsWithId,
 };
