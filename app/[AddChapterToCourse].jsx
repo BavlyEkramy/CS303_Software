@@ -18,7 +18,7 @@ import {
   updateCourse,
 } from "../firebase/Courses";
 import { router, useLocalSearchParams } from "expo-router";
-import AddVideo from "../components/AddVideo";
+import AddVideo from "../Components/AddVideo";
 import { serverTimestamp } from "firebase/firestore";
 
 const AddChapterToCourse = () => {

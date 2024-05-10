@@ -6,6 +6,7 @@ import {
   doc,
   getDocs,
   onSnapshot,
+  orderBy,
   query,
   updateDoc,
   where,
@@ -94,7 +95,7 @@ async function addChapter(idCart, ch) {
 
 async function getChapters(idCart) {
   const coll = collection(db, `Carts/${idCart}/Chapter`);
-  // const q = query(coll, orderBy("time"));
+  const q = query(coll, orderBy("time"));
   const docSnap = (await getDocs(coll)).docs;
   const All = [];
   docSnap.forEach((m) => {
