@@ -11,7 +11,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-
+import { getChapters as getCh } from "./Courses";
 const colCart = collection(db, "Carts");
 
 /* -------------------    get current user   --------------------- */
@@ -36,17 +36,18 @@ async function deleteItemsCards(id) {
 /* -------------------    take object item and object user to add new item  -----------*/
 
 async function AddItemsCards(item, user) {
-  await addDoc(colCart, {
+  const u = await addDoc(colCart, {
     ...item,
     user,
   });
 
-
-
-
-  
+  const t = await getCh(item.id);
+  t[0] = { ...t[0], isOpen: true };
+  t[0].videos[0].isOpen = true;
+  t.forEach(async (value) => {
+    await addChapter(u.id, value);
+  });
 }
-
 // /* -------------------    get items    -----------*/
 async function getCardItems() {
   try {
@@ -89,24 +90,25 @@ async function getCardItemsWithId(id) {
 
 async function IsExistInCart(id) {
   const uid = auth.currentUser.uid;
-  console.log(uid);
-
   const arr = await getCardItemsWithId(id);
   const u = [];
-
   arr.filter((value) => {
     if (value.user.uid == uid) {
       u.push(value);
     }
   });
-  return u.length !== 0;
+  if (u.length !== 0) {
+    return u[0];
+  }
+  return false;
 }
 
-async function GetCartForUser(user) {
+async function GetCartForUser() {
+  const id = auth.currentUser.uid;
   const arr = await getCardItems();
   const c = [];
   arr.map((value) => {
-    if (value.user.id == user.id) {
+    if (value.user.uid == id) {
       c.push(value);
     }
   });
@@ -131,7 +133,7 @@ async function addChapter(idCart, ch) {
 async function getChapters(idCart) {
   const coll = collection(db, `Carts/${idCart}/Chapter`);
   const q = query(coll, orderBy("time"));
-  const docSnap = (await getDocs(coll)).docs;
+  const docSnap = (await getDocs(q)).docs;
   const All = [];
   docSnap.forEach((m) => {
     All.push({ ...m.data(), chId: m.id });

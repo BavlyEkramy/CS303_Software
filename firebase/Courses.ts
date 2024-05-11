@@ -59,15 +59,19 @@ async function GetCourseById(id) {
 }
 ////////////----------------  get courses for admin take id of admin   -----------/////////
 
-async function GetCoursesForAdmin(admin) {
-  const arr = await GetCourses();
-  arr.filter((value, index, array) => {
-    value.admin.id == admin.id;
-  });
-  console.log("GetCourseForAdmin", arr);
-  return arr;
-}
+async function GetCoursesForAdmin() {
+  const id = auth.currentUser.uid;
 
+  const arr = await GetCourses();
+  const y = [];
+  arr.map((value) => {
+    if (value.admin.uid == id) {
+      y.push(value);
+    }
+  });
+  console.log("GetCourseForAdmin", y);
+  return y;
+}
 ////////-------------------    Delete course   -----------////
 async function DelCourse(course) {
   const docRef = doc(colCourse, course.id);
@@ -123,14 +127,14 @@ async function updateChapter(idCourse, c) {
   const coll = collection(db, `Courses/${idCourse}/chapters`);
   const docRef = doc(coll, c.id);
   await updateDoc(docRef, c);
-
 }
 
 //     -------------------    get chapters for course take course id   -----------////
 async function getChapters(idCourse) {
   console.log(idCourse);
   const coll = collection(db, `Courses/${idCourse}/chapters`);
-  const querySnapshot = (await getDocs(coll)).docs;
+  const q = query(coll, orderBy("time"));
+  const querySnapshot = (await getDocs(q)).docs;
   let chapters = [];
   querySnapshot.forEach((doc) => {
     chapters.push({ ...doc.data(), id: doc.id });
@@ -145,7 +149,6 @@ async function deleteChapter(idCourse, idChapter) {
   const docRef = doc(coll, idChapter);
   await deleteDoc(docRef);
 }
-
 
 export {
   AddCourse,

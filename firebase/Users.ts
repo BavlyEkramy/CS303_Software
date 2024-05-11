@@ -16,7 +16,6 @@ import {
 } from "firebase/firestore";
 const colUser = collection(db, "users");
 
-
 onSnapshot(colUser, (snapshot) => {
   let user = [];
   snapshot.docs.forEach((use) => {
@@ -50,6 +49,6 @@ async function DelUser(user) {
   const docRef = doc(colUser, user.id);
   await deleteDoc(docRef);
   await deleteUser(auth.currentUser);
-} 
+}
 
 export { GetUser, AddUser, DelUser };

@@ -40,12 +40,10 @@ async function logout() {
 
 async function getUserUId() {
   if (auth.currentUser != null) {
-    
     return auth.currentUser.uid;
   } else {
     return null;
   }
 }
-
 
 export { register, login, forgetPassword, logout, getUserUId };

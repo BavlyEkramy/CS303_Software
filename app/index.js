@@ -26,7 +26,7 @@ const Route = () => {
     try {
       console.log(user);
       //  const t = await sup();
-      router.("./AddCourse");
+      // router.("./AddCourse");
       // const t = await AddItemsCards(course[1],user);
       // console.log(t);
       // setCourse(t);
