@@ -40,6 +40,11 @@ async function AddItemsCards(item, user) {
     ...item,
     user,
   });
+
+
+
+
+  
 }
 
 // /* -------------------    get items    -----------*/
@@ -82,18 +87,33 @@ async function getCardItemsWithId(id) {
   }
 }
 
-// /* -------------------    subscribe  -----------*/
-// async function subscribe() {
-//   const t = () =>
-//     onSnapshot(colCart, (snapshot) => {
-//       let cart = [];
-//       snapshot.docs.forEach((use) => {
-//         cart.push({ ...use.data(), id: use.id });
-//       });
-//       return cart;
-//     });
-//   return t();
-// }
+async function IsExistInCart(id) {
+  const uid = auth.currentUser.uid;
+  console.log(uid);
+
+  const arr = await getCardItemsWithId(id);
+  const u = [];
+
+  arr.filter((value) => {
+    if (value.user.uid == uid) {
+      u.push(value);
+    }
+  });
+  return u.length !== 0;
+}
+
+async function GetCartForUser(user) {
+  const arr = await getCardItems();
+  const c = [];
+  arr.map((value) => {
+    if (value.user.id == user.id) {
+      c.push(value);
+    }
+  });
+  console.log("GetCartForUser", c);
+  return c;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ////////-------------------  add Chapter take id of cart and object  -----------/////////
@@ -144,4 +164,6 @@ export {
   updateChapter,
   getChapters,
   getCardItemsWithId,
+  GetCartForUser,
+  IsExistInCart,
 };
