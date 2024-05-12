@@ -116,8 +116,6 @@ export default function TestCourse() {
     </SafeAreaView>
   );
 }
-
-// Functional component for form input fields
 const FormInput = ({ label, placeholder, value, onChangeText }) => (
   <View style={styles.inputContainer}>
     <Text style={styles.label}>{label}</Text>
