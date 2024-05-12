@@ -1,18 +1,5 @@
 import { auth, db } from "./Config";
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  setDoc,
-  onSnapshot,
-  deleteDoc,
-  doc,
-  query,
-  where,
-  getDoc,
-  updateDoc,
-  addDoc,
-} from "firebase/firestore";
+
 import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
@@ -38,7 +25,7 @@ async function register(email, password) {
   return cred;
 }
 
-async function resetEmail(email) {
+async function forgetPassword(email) {
   const cred = await sendPasswordResetEmail(auth, email);
   return cred;
 }
@@ -51,4 +38,12 @@ async function logout() {
   await signOut(auth);
 }
 
-export { register, login, resetEmail, logout };
+async function getUserUId() {
+  if (auth.currentUser != null) {
+    return auth.currentUser.uid;
+  } else {
+    return null;
+  }
+}
+
+export { register, login, forgetPassword, logout, getUserUId };

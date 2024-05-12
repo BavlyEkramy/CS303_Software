@@ -14,7 +14,6 @@ import {
   updateDoc,
   addDoc,
 } from "firebase/firestore";
-
 const colUser = collection(db, "users");
 
 onSnapshot(colUser, (snapshot) => {
@@ -31,12 +30,13 @@ async function AddUser(user) {
     uid: auth.currentUser.uid,
     name: user.name,
     email: user.email,
-    image: "",
+    img: user.img,
   });
   return res;
 }
 
 ////////-------------------    get current user   -----------/////////
+
 async function GetUser() {
   const userid = auth.currentUser.uid;
   const user = (await getDocs(query(colUser, where("uid", "==", userid)))).docs;
