@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,9 +9,13 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import CourseList from "../components/CourseList";
 import KeyboardView from "../components/KeyboardView";
 import ProfileSection from "../components/ProfileSection";
+import { GetUser } from "../firebase/Users";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { db } from "../firebase/Config";
+import BasicList from "../components/BasicList";
+import AdvancedList from "../components/AdvancedList";
 
 const profileImg =
   "https://cdn3d.iconscout.com/3d/premium/thumb/lawyer-6779105-5580748.png";
@@ -20,13 +24,63 @@ const HomeScreen = () => {
   const [userName, setUserName] = useState("User Name");
   const [searchTitle, setSearchTitle] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const [basicCourses, setBasicCourses] = useState([]);
+  const [advancedCourses, setAdvancedCourses] = useState([]);
+
+  const fetchCoursesData = async () => {
+    const colCourse = collection(db, "Courses");
+    const q1 = query(colCourse, where("category", "==", "Basic"));
+    onSnapshot(q1, (snapshot) => {
+      let courses = [];
+      snapshot.docs.forEach((use) => {
+        courses.push({ ...use.data(), id: use.id });
+      });
+      setBasicCourses(courses);
+      console.log("Basic", courses);
+    });
+    const q2 = query(colCourse, where("category", "==", "Advanced"));
+    onSnapshot(q2, (snapshot) => {
+      let courses = [];
+      snapshot.docs.forEach((use) => {
+        courses.push({ ...use.data(), id: use.id });
+      });
+      setAdvancedCourses(courses);
+      console.log("Advanced", courses);
+    });
+  };
+
+  const fetchUserData = async () => {
+    try {
+      const userData = await GetUser();
+      setUserName(userData.name);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  useLayoutEffect(() => {
+    fetchUserData();
+    fetchCoursesData();
+  }, []);
+
   const toProfile = () => {
     router.push("/profile/Profile");
   };
+
+  const basicData = basicCourses.filter((item) => {
+    return item.name.toLowerCase().includes(searchTitle.toLowerCase());
+  });
+
+  const advancedData = advancedCourses.filter((item) => {
+    return item.name.toLowerCase().includes(searchTitle.toLowerCase());
+  });
   return (
     <>
       <KeyboardView>
-        <SafeAreaView className="flex-1 pt-6">
+        <SafeAreaView
+          style={{ paddingTop: StatusBar.currentHeight }}
+          className="flex-1"
+        >
           <View style={styles.backView}>
             {/* ===== PROFILE PART ===== */}
             <ProfileSection
@@ -71,7 +125,7 @@ const HomeScreen = () => {
               <Text className="text-3xl font-bold text-white ml-6">
                 Basic Courses
               </Text>
-              <CourseList />
+              <BasicList courses={basicData} />
             </View>
 
             {/* ===== ADVANCED COURSES PART ===== */}
@@ -79,7 +133,7 @@ const HomeScreen = () => {
               <Text className="text-3xl font-bold text-dark ml-6">
                 Advanced Courses
               </Text>
-              <CourseList />
+              <AdvancedList courses={advancedData} />
             </View>
           </View>
         </SafeAreaView>

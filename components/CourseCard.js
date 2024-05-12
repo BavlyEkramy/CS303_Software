@@ -19,7 +19,7 @@ const CourseCard = ({ item }) => {
         }}
       >
         <Image
-          source={item.pic}
+          source={{ uri: item.img }}
           style={{ height: hp(12), width: wp(30), borderRadius: 10 }}
           transition={500}
         />
@@ -31,7 +31,7 @@ const CourseCard = ({ item }) => {
           }}
         >
           <View className="flex justify-between">
-            <Text className="text-xl font-semibold">{item.title}</Text>
+            <Text className="text-xl font-semibold">{item.name}</Text>
 
             <View className="flex-row items-center mt-2">
               <Octicons name="bookmark" size={20} color="grey" />
@@ -39,7 +39,7 @@ const CourseCard = ({ item }) => {
                 style={{ color: "gray", marginLeft: 10 }}
                 className="text-xl"
               >
-                {item.chapters} Chapters
+                {item.Nch} Chapters
               </Text>
             </View>
             <View className="flex-row items-center mt-2">
@@ -48,7 +48,7 @@ const CourseCard = ({ item }) => {
                 style={{ color: "gray", marginLeft: 10 }}
                 className="text-xl"
               >
-                {item.videos} Videos
+                {item.Nvi} Videos
               </Text>
             </View>
           </View>

@@ -19,5 +19,3 @@ const SplashScreen = ({ setLoading }) => {
 };
 
 export default SplashScreen;
-
-const styles = StyleSheet.create({});

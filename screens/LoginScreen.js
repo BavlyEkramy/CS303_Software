@@ -1,26 +1,27 @@
 import {
-  Platform,
   Pressable,
   SafeAreaView,
   StyleSheet,
-  StatusBar,
   Text,
   View,
   Image,
-  TextInput,
   Keyboard,
   Alert,
+  StatusBar,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import { useRouter } from "expo-router";
 import Input from "../components/Input";
 import Button from "../components/Button";
-import Loader from "../components/Loader";
 import KeyboardView from "../components/KeyboardView";
-
-const googleLogo = require("../assets/images/google.png");
-const facebookLogo = require("../assets/images/facebook.png");
+import { login } from "../firebase/Log";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 
 const LoginScreen = () => {
   const router = useRouter();
@@ -50,18 +51,27 @@ const LoginScreen = () => {
     }
 
     if (valid) {
-      login();
+      handleLogin();
     }
   };
 
-  const login = () => {
+  const handleLogin = async () => {
     setLoading(true);
     setTimeout(async () => {
       setLoading(false);
       try {
-        router.push("/account/Register");
+        await login(inputs.email, inputs.password);
+        await AsyncStorage.setItem("userRegistered", "true");
+        await AsyncStorage.setItem("email", inputs.email);
+        await AsyncStorage.setItem("password", inputs.password);
+
+        router.push("/home/Home");
       } catch (error) {
-        Alert.alert("Error", "Something went wrong");
+        if (error.code === "auth/invalid-credential") {
+          Alert.alert("Invalid Email or Password");
+        } else {
+          Alert.alert("Error", error.message);
+        }
       }
     }, 2000);
   };
@@ -76,10 +86,12 @@ const LoginScreen = () => {
     <>
       <KeyboardView>
         <View
-          className="flex-1"
-          style={{ backgroundColor: "#7B68EE", paddingTop: 40 }}
+          className="flex-1 mt-6"
+          style={{
+            backgroundColor: "#7B68EE",
+            paddingTop: StatusBar.currentHeight,
+          }}
         >
-          <Loader visible={loading} />
           <SafeAreaView className="flex">
             <View className="flex-row justify-start">
               <Pressable
@@ -161,6 +173,7 @@ const LoginScreen = () => {
             </View>
           </View>
         </View>
+        <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
       </KeyboardView>
     </>
   );

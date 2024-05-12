@@ -7,17 +7,20 @@ import {
   Text,
   View,
   Image,
-  TextInput,
   Keyboard,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import { useRouter } from "expo-router";
-
+import { forgetPassword } from "../firebase/Log";
 import Input from "../components/Input";
 import Button from "../components/Button";
-import Loader from "../components/Loader";
 import KeyboardView from "../components/KeyboardView";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 
 const ForgetPasswordScreen = () => {
   const router = useRouter();
@@ -40,16 +43,17 @@ const ForgetPasswordScreen = () => {
     }
 
     if (valid) {
-      forgetPassword();
+      handleforgetPassword();
     }
   };
 
-  const forgetPassword = () => {
+  const handleforgetPassword = () => {
     setLoading(true);
     setTimeout(async () => {
       setLoading(false);
       try {
-        router.push("/account/Register");
+        forgetPassword(inputs.email);
+        alert("check your email");
       } catch (error) {
         Alert.alert("Error", "Something went wrong");
       }
@@ -67,7 +71,7 @@ const ForgetPasswordScreen = () => {
     <>
       <KeyboardView>
         <View
-          className="flex-1"
+          className="flex-1 mt-3"
           style={{ backgroundColor: "#7B68EE", paddingTop: 40 }}
         >
           <SafeAreaView className="flex">
@@ -161,7 +165,7 @@ const ForgetPasswordScreen = () => {
             </View>
           </View>
         </View>
-        <StatusBar backgroundColor={"lightgreen"} barStyle={"dark-content"} />
+        <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
       </KeyboardView>
     </>
   );

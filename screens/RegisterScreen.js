@@ -1,5 +1,4 @@
 import {
-  Platform,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -7,22 +6,24 @@ import {
   Text,
   View,
   Image,
-  TextInput,
   Keyboard,
   Alert,
-  KeyboardAvoidingView,
-  ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import { useRouter } from "expo-router";
 import Input from "../components/Input";
 import Button from "../components/Button";
-import Loader from "../components/Loader";
 import KeyboardView from "../components/KeyboardView";
+import { register } from "../firebase/Log";
+import { AddUser } from "../firebase/Users";
+import { AsyncStorage } from "@react-native-async-storage/async-storage";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 
-const googleLogo = require("../assets/images/google.png");
-const facebookLogo = require("../assets/images/facebook.png");
 const registerLogo = require("../assets/images/register.png");
 
 const Register = () => {
@@ -71,16 +72,24 @@ const Register = () => {
     }
   };
 
-  const signUp = () => {
+  const signUp = async () => {
     setLoading(true);
-    setTimeout(() => {
+    try {
+      await register(inputs.email, inputs.password);
+      await AsyncStorage.setItem("userRegistered", "true");
+      await AsyncStorage.setItem("email", inputs.email);
+      await AsyncStorage.setItem("password", inputs.password);
+      await AddUser({
+        name: inputs.username,
+        email: inputs.email,
+      });
       setLoading(false);
-      try {
-        router.push("/account/Login");
-      } catch (error) {
-        Alert.alert("Error", "Something went wrong");
-      }
-    }, 2000);
+      router.push("/home/Home");
+      Alert.alert("Signed Up");
+    } catch (error) {
+      setLoading(false);
+      Alert.alert(error.message);
+    }
   };
 
   const handleOnChange = (text, input) => {
@@ -93,10 +102,9 @@ const Register = () => {
     <>
       <KeyboardView>
         <View
-          className="flex-1"
+          className="flex-1 mt-3"
           style={{ backgroundColor: "#7B68EE", paddingTop: 40 }}
         >
-          <Loader visible={loading} />
           <SafeAreaView className="flex">
             <View className="flex-row justify-start">
               <Pressable
@@ -181,7 +189,7 @@ const Register = () => {
               </Pressable>
             </View>
           </View>
-          <StatusBar backgroundColor={"lightgreen"} barStyle={"dark-content"} />
+          <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
         </View>
       </KeyboardView>
     </>

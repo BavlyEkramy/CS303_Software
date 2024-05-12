@@ -1,8 +1,10 @@
-import React, { useState } from "react";
-import Start from "./home/Start";
+import React from "react";
+import Welcome from "./home/Welcome";
+import CourseDetails from "./course/CourseDetails";
+import AddCourse from "./course/AddCourse";
 
 const Route = () => {
-  return <Start />;
+  return <Welcome />;
 };
 
 export default Route;
